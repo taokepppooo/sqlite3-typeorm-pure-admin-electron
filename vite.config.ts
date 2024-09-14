@@ -48,6 +48,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
       // 消除打包大小超过500kb警告
       chunkSizeWarningLimit: 4000,
       rollupOptions: {
+        external: ["typeorm", "better-sqlite3"],
         input: {
           index: pathResolve("./index.html", import.meta.url)
         },

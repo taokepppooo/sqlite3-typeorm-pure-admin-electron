@@ -1,3 +1,5 @@
+import path from "node:path";
+import fs from "node:fs";
 import { cdn } from "./cdn";
 import vue from "@vitejs/plugin-vue";
 import { pathResolve } from "./utils";
@@ -17,6 +19,11 @@ import { themePreprocessorPlugin } from "@pureadmin/theme";
 import { genScssMultipleScopeVars } from "../src/layout/theme";
 import { vitePluginFakeServer } from "vite-plugin-fake-server";
 import pkg from "../package.json";
+import type { Plugin } from "vite";
+import virtual from "vite-plugin-virtual";
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
 
 export function getPluginsList(
   command: string,
@@ -69,6 +76,7 @@ export function getPluginsList(
     svgLoader(),
     VITE_CDN ? cdn : null,
     configCompressPlugin(VITE_COMPRESSION),
+    bindingSqlite3({ command }),
     // 线上环境删除console
     removeConsole({ external: ["src/assets/iconfont/iconfont.js"] }),
     // 打包分析
@@ -97,10 +105,39 @@ export function getPluginsList(
                   minify: isBuild,
                   outDir: "dist-electron/main",
                   rollupOptions: {
-                    external: Object.keys(
-                      "dependencies" in pkg ? pkg.dependencies : {}
-                    )
+                    external: [
+                      ...Object.keys(
+                        "dependencies" in pkg ? pkg.dependencies : {}
+                      ),
+                      "typeorm",
+                      "better-sqlite3"
+                    ]
                   }
+                },
+                plugins: [
+                  virtual({
+                    "virtual:empty-module": "export default {};"
+                  })
+                ],
+                resolve: {
+                  alias: {
+                    mongodb: "virtual:empty-module",
+                    "hdb-pool": "virtual:empty-module",
+                    mssql: "virtual:empty-module",
+                    mysql: "virtual:empty-module",
+                    mysql2: "virtual:empty-module",
+                    oracledb: "virtual:empty-module",
+                    pg: "virtual:empty-module",
+                    "pg-native": "virtual:empty-module",
+                    "pg-query-stream": "virtual:empty-module",
+                    "typeorm-aurora-data-api-driver": "virtual:empty-module",
+                    redis: "virtual:empty-module",
+                    ioredis: "virtual:empty-module",
+                    "sql.js": "virtual:empty-module"
+                  }
+                },
+                optimizeDeps: {
+                  exclude: ["typeorm", "better-sqlite3"]
                 }
               }
             },
@@ -130,4 +167,58 @@ export function getPluginsList(
         ]
       : null
   ];
+}
+
+function bindingSqlite3(
+  options: {
+    output?: string;
+    better_sqlite3_node?: string;
+    command?: string;
+  } = {}
+): Plugin {
+  const TAG = "[vite-plugin-binding-sqlite3]";
+  options.output ??= "dist-native";
+  options.better_sqlite3_node ??= "better_sqlite3.node";
+  options.command ??= "build";
+
+  return {
+    name: "vite-plugin-binding-sqlite3",
+    config(config) {
+      const path$1 = process.platform === "win32" ? path.win32 : path.posix;
+      const resolvedRoot = config.root
+        ? path$1.resolve(config.root)
+        : process.cwd();
+      const output = path$1.resolve(resolvedRoot, options.output);
+      const better_sqlite3 = require.resolve("better-sqlite3");
+      const better_sqlite3_root = path$1.join(
+        better_sqlite3.slice(0, better_sqlite3.lastIndexOf("node_modules")),
+        "node_modules/better-sqlite3"
+      );
+      const better_sqlite3_node = path$1.join(
+        better_sqlite3_root,
+        "build/Release",
+        options.better_sqlite3_node
+      );
+      const better_sqlite3_copy = path$1.join(
+        output,
+        options.better_sqlite3_node
+      );
+      if (!fs.existsSync(better_sqlite3_node)) {
+        throw new Error(`${TAG} Can not found "${better_sqlite3_node}".`);
+      }
+      if (!fs.existsSync(output)) {
+        fs.mkdirSync(output, { recursive: true });
+      }
+      fs.copyFileSync(better_sqlite3_node, better_sqlite3_copy);
+      /** `dist-native/better_sqlite3.node` */
+      const BETTER_SQLITE3_BINDING = better_sqlite3_copy.replace(
+        resolvedRoot + path.sep,
+        ""
+      );
+      fs.writeFileSync(
+        path.join(resolvedRoot, ".env"),
+        `VITE_BETTER_SQLITE3_BINDING=${BETTER_SQLITE3_BINDING}`
+      );
+    }
+  };
 }

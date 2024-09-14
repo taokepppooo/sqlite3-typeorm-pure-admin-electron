@@ -20,6 +20,9 @@ tests/**/coverage/
 *.njsproj
 *.sln
 tsconfig.tsbuildinfo
+.history
 
 dist-electron
+dist-native
 release
+database.db

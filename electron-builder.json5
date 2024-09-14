@@ -12,7 +12,7 @@
     buildResources: "dist",
     output: "release/${version}"
   },
-  files: ["dist-electron/**", "dist/**"],
+  files: ["dist-electron/**", "dist/**", "dist-native/**"],
   nsis: {
     allowToChangeInstallationDirectory: true,
     createDesktopShortcut: true,
