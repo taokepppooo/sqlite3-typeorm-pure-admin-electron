@@ -1,20 +1,42 @@
-import ftp from "basic-ftp";
+import { readFileSync, existsSync } from "node:fs";
+import { createRequire } from "node:module";
+import log from "electron-log/main";
 
-export async function connectClient(): Promise<void> {
-  const client = new ftp.Client();
-  client.ftp.verbose = true;
+const require = createRequire(import.meta.url);
 
-  try {
-    await client.access({
-      host: "localhost",
-      port: 50021,
-      user: "admin",
-      password: "123456",
-      secure: false
-    });
+const { Client } = require("ssh2");
 
-    await client.uploadFrom("package.json", "packagewssss.json");
-  } catch (err) {
-    console.log(err);
+export function connectClient() {
+  const conn = new Client();
+
+  const localFilePath = "package.json";
+
+  if (!existsSync(localFilePath)) {
+    console.error("Local file does not exist:", localFilePath);
+    return;
   }
+
+  conn
+    .on("ready", () => {
+      log.info("Client connect ready");
+
+      conn.sftp((err, sftp) => {
+        if (err) throw err;
+
+        const remoteFilePath = "packagesss.json";
+
+        sftp.fastPut(localFilePath, remoteFilePath, err => {
+          if (err) throw err;
+          conn.end();
+        });
+      });
+    })
+    .connect({
+      host: "192.168.50.227",
+      port: 50021,
+      username: "user",
+      password: "password",
+      passphrase: "user",
+      privateKey: readFileSync("rsa", "utf8")
+    });
 }
