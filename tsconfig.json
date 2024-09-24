@@ -7,6 +7,7 @@
     "jsx": "preserve",
     "importHelpers": true,
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "strictFunctionTypes": false,
     "skipLibCheck": true,
     "esModuleInterop": true,

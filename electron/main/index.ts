@@ -11,8 +11,8 @@ import {
   BrowserWindow
 } from "electron";
 // import { scanNetwork } from '../net'
-import { connectClient } from "../sftp/client";
-import { createServer } from "../sftp/server";
+// import { connectClient } from "../sftp/client";
+// import { createServer } from "../sftp/server";
 import "reflect-metadata";
 import { UserController } from "../controller/UserController";
 
@@ -67,10 +67,10 @@ function createMenu(label = "进入全屏幕") {
 }
 
 async function createWindow() {
-  await createServer();
-  ipcMain.on("connect-client", async () => {
-    connectClient();
-  });
+  // await createServer();
+  // ipcMain.on("connect-client", async () => {
+  //   connectClient();
+  // });
   // ipcMain.on("scan-network", async () => {
   //   await scanNetwork();
   // });
