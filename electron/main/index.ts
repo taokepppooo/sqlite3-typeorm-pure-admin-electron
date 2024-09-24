@@ -1,19 +1,9 @@
 import { release } from "node:os";
 import { fileURLToPath } from "node:url";
 import { join, dirname } from "node:path";
-import {
-  type MenuItem,
-  type MenuItemConstructorOptions,
-  app,
-  Menu,
-  shell,
-  ipcMain,
-  BrowserWindow
-} from "electron";
-// import { scanNetwork } from '../net'
-// import { connectClient } from "../sftp/client";
-// import { createServer } from "../sftp/server";
+import { type MenuItem, type MenuItemConstructorOptions, app, Menu, shell, ipcMain, BrowserWindow } from "electron";
 import "reflect-metadata";
+import "@electron/ipc";
 import { UserController } from "../controller/UserController";
 
 // The built directory structure
@@ -30,9 +20,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 process.env.DIST_ELECTRON = join(__dirname, "..");
 process.env.DIST = join(process.env.DIST_ELECTRON, "../dist");
-process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL
-  ? join(process.env.DIST_ELECTRON, "../public")
-  : process.env.DIST;
+process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL ? join(process.env.DIST_ELECTRON, "../public") : process.env.DIST;
 // 是否为开发环境
 const isDev = process.env["NODE_ENV"] === "development";
 
@@ -60,21 +48,11 @@ const indexHtml = join(process.env.DIST, "index.html");
 
 // 创建菜单
 function createMenu(label = "进入全屏幕") {
-  const menu = Menu.buildFromTemplate(
-    appMenu(label) as (MenuItemConstructorOptions | MenuItem)[]
-  );
+  const menu = Menu.buildFromTemplate(appMenu(label) as (MenuItemConstructorOptions | MenuItem)[]);
   Menu.setApplicationMenu(menu);
 }
 
 async function createWindow() {
-  // await createServer();
-  // ipcMain.on("connect-client", async () => {
-  //   connectClient();
-  // });
-  // ipcMain.on("scan-network", async () => {
-  //   await scanNetwork();
-  // });
-
   const userController = new UserController();
   await userController.save({ id: 7, firstName: "John Doe2", age: 12 });
 

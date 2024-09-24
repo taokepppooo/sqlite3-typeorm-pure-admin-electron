@@ -42,9 +42,7 @@ export function viteBuildInfo(): Plugin {
             console.log(
               boxen(
                 gradientString("cyan", "magenta").multiline(
-                  `🎉 恭喜打包完成（总用时${dayjs
-                    .duration(endTime.diff(startTime))
-                    .format("mm分ss秒")}，打包后的大小为${size}）`
+                  `🎉 恭喜打包完成（总用时${dayjs.duration(endTime.diff(startTime)).format("mm分ss秒")}，打包后的大小为${size}）`
                 ),
                 boxenOptions
               )

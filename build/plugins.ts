@@ -25,11 +25,7 @@ import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 
-export function getPluginsList(
-  command: string,
-  VITE_CDN: boolean,
-  VITE_COMPRESSION: ViteCompression
-): PluginOption[] {
+export function getPluginsList(command: string, VITE_CDN: boolean, VITE_COMPRESSION: ViteCompression): PluginOption[] {
   const prodMock = true;
   const isServe = command === "serve";
   const isBuild = command === "build";
@@ -80,9 +76,7 @@ export function getPluginsList(
     // 线上环境删除console
     removeConsole({ external: ["src/assets/iconfont/iconfont.js"] }),
     // 打包分析
-    lifecycle === "report"
-      ? visualizer({ open: true, brotliSize: true, filename: "report.html" })
-      : (null as any),
+    lifecycle === "report" ? visualizer({ open: true, brotliSize: true, filename: "report.html" }) : (null as any),
     !lifecycle.includes("browser")
       ? [
           // 支持electron
@@ -92,9 +86,7 @@ export function getPluginsList(
               entry: "electron/main/index.ts",
               onstart(options) {
                 if (process.env.VSCODE_DEBUG) {
-                  console.log(
-                    /* For `.vscode/.debug.script.mjs` */ "[startup] Electron App"
-                  );
+                  console.log(/* For `.vscode/.debug.script.mjs` */ "[startup] Electron App");
                 } else {
                   options.startup();
                 }
@@ -105,13 +97,7 @@ export function getPluginsList(
                   minify: isBuild,
                   outDir: "dist-electron/main",
                   rollupOptions: {
-                    external: [
-                      ...Object.keys(
-                        "dependencies" in pkg ? pkg.dependencies : {}
-                      ),
-                      "typeorm",
-                      "better-sqlite3"
-                    ]
+                    external: [...Object.keys("dependencies" in pkg ? pkg.dependencies : {}), "typeorm", "better-sqlite3", "@electron"]
                   }
                 },
                 plugins: [
@@ -121,6 +107,7 @@ export function getPluginsList(
                 ],
                 resolve: {
                   alias: {
+                    "@electron": pathResolve("../electron"),
                     mongodb: "virtual:empty-module",
                     "hdb-pool": "virtual:empty-module",
                     mssql: "virtual:empty-module",
@@ -154,9 +141,7 @@ export function getPluginsList(
                   minify: isBuild,
                   outDir: "dist-electron/preload",
                   rollupOptions: {
-                    external: Object.keys(
-                      "dependencies" in pkg ? pkg.dependencies : {}
-                    )
+                    external: Object.keys("dependencies" in pkg ? pkg.dependencies : {})
                   }
                 }
               }
@@ -185,24 +170,12 @@ function bindingSqlite3(
     name: "vite-plugin-binding-sqlite3",
     config(config) {
       const path$1 = process.platform === "win32" ? path.win32 : path.posix;
-      const resolvedRoot = config.root
-        ? path$1.resolve(config.root)
-        : process.cwd();
+      const resolvedRoot = config.root ? path$1.resolve(config.root) : process.cwd();
       const output = path$1.resolve(resolvedRoot, options.output);
       const better_sqlite3 = require.resolve("better-sqlite3");
-      const better_sqlite3_root = path$1.join(
-        better_sqlite3.slice(0, better_sqlite3.lastIndexOf("node_modules")),
-        "node_modules/better-sqlite3"
-      );
-      const better_sqlite3_node = path$1.join(
-        better_sqlite3_root,
-        "build/Release",
-        options.better_sqlite3_node
-      );
-      const better_sqlite3_copy = path$1.join(
-        output,
-        options.better_sqlite3_node
-      );
+      const better_sqlite3_root = path$1.join(better_sqlite3.slice(0, better_sqlite3.lastIndexOf("node_modules")), "node_modules/better-sqlite3");
+      const better_sqlite3_node = path$1.join(better_sqlite3_root, "build/Release", options.better_sqlite3_node);
+      const better_sqlite3_copy = path$1.join(output, options.better_sqlite3_node);
       if (!fs.existsSync(better_sqlite3_node)) {
         throw new Error(`${TAG} Can not found "${better_sqlite3_node}".`);
       }
@@ -211,14 +184,8 @@ function bindingSqlite3(
       }
       fs.copyFileSync(better_sqlite3_node, better_sqlite3_copy);
       /** `dist-native/better_sqlite3.node` */
-      const BETTER_SQLITE3_BINDING = better_sqlite3_copy.replace(
-        resolvedRoot + path.sep,
-        ""
-      );
-      fs.writeFileSync(
-        path.join(resolvedRoot, ".env"),
-        `VITE_BETTER_SQLITE3_BINDING=${BETTER_SQLITE3_BINDING}`
-      );
+      const BETTER_SQLITE3_BINDING = better_sqlite3_copy.replace(resolvedRoot + path.sep, "");
+      fs.writeFileSync(path.join(resolvedRoot, ".env"), `VITE_BETTER_SQLITE3_BINDING=${BETTER_SQLITE3_BINDING}`);
     }
   };
 }

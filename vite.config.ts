@@ -2,21 +2,14 @@ import { rmSync } from "node:fs";
 import { getPluginsList } from "./build/plugins";
 import { include, exclude } from "./build/optimize";
 import { type UserConfigExport, type ConfigEnv, loadEnv } from "vite";
-import {
-  root,
-  alias,
-  wrapperEnv,
-  pathResolve,
-  __APP_INFO__
-} from "./build/utils";
+import { root, alias, wrapperEnv, pathResolve, __APP_INFO__ } from "./build/utils";
 
 export default ({ command, mode }: ConfigEnv): UserConfigExport => {
   const lifecycle = process.env.npm_lifecycle_event;
   if (!lifecycle.includes("browser")) {
     rmSync("dist-electron", { recursive: true, force: true });
   }
-  const { VITE_CDN, VITE_PORT, VITE_COMPRESSION, VITE_PUBLIC_PATH } =
-    wrapperEnv(loadEnv(mode, root));
+  const { VITE_CDN, VITE_PORT, VITE_COMPRESSION, VITE_PUBLIC_PATH } = wrapperEnv(loadEnv(mode, root));
   return {
     base: VITE_PUBLIC_PATH,
     root,
@@ -48,7 +41,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
       // 消除打包大小超过500kb警告
       chunkSizeWarningLimit: 4000,
       rollupOptions: {
-        external: ["typeorm", "better-sqlite3"],
+        external: ["typeorm", "better-sqlite3", "@electron"],
         input: {
           index: pathResolve("./index.html", import.meta.url)
         },

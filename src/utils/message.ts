@@ -35,10 +35,7 @@ interface MessageParams {
 /**
  * `Message` 消息提示函数
  */
-const message = (
-  message: string | VNode | (() => VNode),
-  params?: MessageParams
-): MessageHandler => {
+const message = (message: string | VNode | (() => VNode), params?: MessageParams): MessageHandler => {
   if (!params) {
     return ElMessage({
       message,

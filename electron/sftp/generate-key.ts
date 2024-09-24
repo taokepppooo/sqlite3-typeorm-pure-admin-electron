@@ -7,13 +7,9 @@ const { utils } = require("ssh2");
 
 const { generateKeyPair } = utils;
 
-generateKeyPair(
-  "rsa",
-  { bits: 2048, passphrase: "user", cipher: "aes256-cbc" },
-  (err, keys) => {
-    if (err) throw err;
+generateKeyPair("rsa", { bits: 2048, passphrase: "user", cipher: "aes256-cbc" }, (err, keys) => {
+  if (err) throw err;
 
-    fs.writeFileSync("rsa.pub", Buffer.from(keys.public, "utf8"));
-    fs.writeFileSync("rsa", Buffer.from(keys.private, "utf8"));
-  }
-);
+  fs.writeFileSync("rsa.pub", Buffer.from(keys.public, "utf8"));
+  fs.writeFileSync("rsa", Buffer.from(keys.private, "utf8"));
+});

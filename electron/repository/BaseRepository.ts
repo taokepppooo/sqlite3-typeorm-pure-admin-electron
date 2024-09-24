@@ -11,9 +11,7 @@ export class BaseRepository<T> {
 
   public async getRepository(): Promise<Repository<T>> {
     if (!this.repository) {
-      this.repository = await DatabaseManager.getInstance().getRepository<T>(
-        this.entity
-      );
+      this.repository = await DatabaseManager.getInstance().getRepository<T>(this.entity);
     }
 
     return this.repository;

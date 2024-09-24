@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import { ipcRenderer } from "electron";
+import { initServer } from "@/ipc/sftp-server";
 
 defineOptions({
   name: "Welcome"
 });
 
-const handleClick = () => {
-  console.log("aaaa");
-  ipcRenderer.send("connect-client");
+const handleInitServer = () => {
+  initServer();
 };
 </script>
 
 <template>
   <h1>Pure-Admin-Thin（非国际化版本）</h1>
-  <button @click="handleClick">Open Dialog</button>
+  <button @click="handleInitServer">创建服务器</button>
 </template>

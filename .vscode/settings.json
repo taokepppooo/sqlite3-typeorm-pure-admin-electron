@@ -27,27 +27,14 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  "iconify.excludes": [
-    "el"
-  ],
-  "vscodeCustomCodeColor.highlightValue": [
-    "v-loading",
-    "v-auth",
-    "v-copy",
-    "v-longpress",
-    "v-optimize",
-    "v-perms",
-    "v-ripple"
-  ],
+  "iconify.excludes": ["el"],
+  "vscodeCustomCodeColor.highlightValue": ["v-loading", "v-auth", "v-copy", "v-longpress", "v-optimize", "v-perms", "v-ripple"],
   "vscodeCustomCodeColor.highlightValueColor": "#b392f0",
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.tsc.autoDetect": "off",
   "json.schemas": [
     {
-      "fileMatch": [
-        "/*electron-builder.json5",
-        "/*electron-builder.json"
-      ],
+      "fileMatch": ["/*electron-builder.json5", "/*electron-builder.json"],
       "url": "https://json.schemastore.org/electron-builder"
     }
   ]

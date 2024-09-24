@@ -13,11 +13,7 @@ export const AppDataSource = new DataSource({
   type: "better-sqlite3",
   database: "database.db",
   entities: [User],
-  nativeBinding: path.join(
-    path.dirname(__dirname),
-    "..",
-    "dist-native/better_sqlite3.node"
-  )
+  nativeBinding: path.join(path.dirname(__dirname), "..", "dist-native/better_sqlite3.node")
 });
 
 export class DatabaseManager {

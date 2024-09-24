@@ -1,13 +1,8 @@
 import { timingSafeEqual } from "node:crypto";
 import { createRequire } from "node:module";
-import {
-  readFileSync,
-  existsSync,
-  openSync,
-  closeSync,
-  writeSync
-} from "node:fs";
+import { readFileSync, existsSync, openSync, closeSync, writeSync } from "node:fs";
 import log from "electron-log/main";
+import { getLocalIp, pollingCheck } from "@electron/network/ip";
 
 const require = createRequire(import.meta.url);
 
@@ -34,7 +29,7 @@ function checkValue(input, allowed) {
   return !autoReject && isMatch;
 }
 
-export function createServer() {
+export function createServer(ip, port) {
   const server = new Server(
     {
       hostKeys: [{ key: readFileSync("rsa"), passphrase: "user" }]
@@ -45,24 +40,17 @@ export function createServer() {
       client
         .on("authentication", ctx => {
           let allowed = true;
-          if (!checkValue(Buffer.from(ctx.username), allowedUser))
-            allowed = false;
+          if (!checkValue(Buffer.from(ctx.username), allowedUser)) allowed = false;
 
           switch (ctx.method) {
             case "password":
-              if (!checkValue(Buffer.from(ctx.password), allowedPassword))
-                return ctx.reject();
+              if (!checkValue(Buffer.from(ctx.password), allowedPassword)) return ctx.reject();
               break;
             case "publickey":
               if (
                 ctx.key.algo !== allowedPubKey.type ||
                 !checkValue(ctx.key.data, allowedPubKey.getPublicSSH()) ||
-                (ctx.signature &&
-                  allowedPubKey.verify(
-                    ctx.blob,
-                    ctx.signature,
-                    ctx.hashAlgo
-                  ) !== true)
+                (ctx.signature && allowedPubKey.verify(ctx.blob, ctx.signature, ctx.hashAlgo) !== true)
               ) {
                 return ctx.reject();
               }
@@ -75,9 +63,7 @@ export function createServer() {
           else ctx.reject();
         })
         .on("ready", () => {
-          log.info(
-            `SFTP Client authenticated! ip:${client._sock.remoteAddress}`
-          );
+          log.info(`SFTP Client authenticated! ip:${client._sock.remoteAddress}`);
 
           client.on("session", (accept, _reject) => {
             const session = accept();
@@ -136,14 +122,24 @@ export function createServer() {
           });
         })
         .on("close", () => {
-          log.info(
-            `SFTP Client disconnected! ip:${client._sock.remoteAddress}`
-          );
+          log.info(`SFTP Client disconnected! ip:${client._sock.remoteAddress}`);
         });
     }
-  ).listen(50021, "192.168.50.227", function () {
+  ).listen(port, ip, function () {
     log.info(`SFTP Listening on port! port:${this.address().port}`);
   });
 
   return server;
+}
+
+export function initServer(port = 50021) {
+  const server = createServer(getLocalIp(), port);
+
+  if (server) {
+    pollingCheck((ip: string) => {
+      log.info("IP changed, restarting server!");
+      server.close();
+      createServer(ip, port);
+    });
+  }
 }

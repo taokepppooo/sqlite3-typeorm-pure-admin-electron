@@ -10,16 +10,7 @@ import pluginTypeScript from "@typescript-eslint/eslint-plugin";
 export default defineFlatConfig([
   {
     ...js.configs.recommended,
-    ignores: [
-      "**/.*",
-      "dist/*",
-      "release/*",
-      "*.d.ts",
-      "public/*",
-      "src/assets/**",
-      "dist-electron/*",
-      "src/**/iconfont/**"
-    ],
+    ignores: ["**/.*", "dist/*", "release/*", "*.d.ts", "public/*", "src/assets/**", "dist-electron/*", "src/**/iconfont/**"],
     languageOptions: {
       globals: {
         // index.d.ts
@@ -70,6 +61,12 @@ export default defineFlatConfig([
       "prettier/prettier": [
         "error",
         {
+          printWidth: 160,
+          tabWidth: 2,
+          bracketSpacing: true,
+          singleQuote: false,
+          arrowParens: "avoid",
+          trailingComma: "none",
           endOfLine: "auto"
         }
       ]
@@ -104,10 +101,7 @@ export default defineFlatConfig([
           fixStyle: "inline-type-imports"
         }
       ],
-      "@typescript-eslint/prefer-literal-enum-member": [
-        "error",
-        { allowBitwiseExpressions: true }
-      ],
+      "@typescript-eslint/prefer-literal-enum-member": ["error", { allowBitwiseExpressions: true }],
       "@typescript-eslint/no-unused-vars": [
         "error",
         {

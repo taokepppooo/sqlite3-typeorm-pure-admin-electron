@@ -26,8 +26,7 @@ const props = withDefaults(defineProps<Props>(), {});
 const itemStyle = computed(() => {
   return item => {
     return {
-      background:
-        item?.path === active.value ? useEpThemeStoreHook().epThemeColor : "",
+      background: item?.path === active.value ? useEpThemeStoreHook().epThemeColor : "",
       color: item.path === active.value ? "#fff" : "",
       fontSize: item.path === active.value ? "16px" : "14px"
     };
@@ -97,9 +96,7 @@ useResizeObserver(historyRef, resizeResult);
 function handleScroll(index: number) {
   const curInstance = instance?.proxy?.$refs[`historyItemRef${index}`];
   if (!curInstance) return 0;
-  const curRef = isArray(curInstance)
-    ? (curInstance[0] as ElRef)
-    : (curInstance as ElRef);
+  const curRef = isArray(curInstance) ? (curInstance[0] as ElRef) : (curInstance as ElRef);
   const scrollTop = curRef.offsetTop + 128; // 128 两个history-item（56px+56px=112px）高度加上下margin（8px+8px=16px）
   return scrollTop > innerHeight.value ? scrollTop - innerHeight.value : 0;
 }
@@ -115,8 +112,7 @@ watch(
   val => {
     if (val.length > 1) {
       nextTick(() => {
-        const wrapper: HTMLElement =
-          document.querySelector(".collect-container");
+        const wrapper: HTMLElement = document.querySelector(".collect-container");
         if (!wrapper || sortableInstance) return;
         sortableInstance = Sortable.create(wrapper, {
           animation: 160,
@@ -151,11 +147,7 @@ defineExpose({ handleScroll });
         @click="handleTo"
         @mouseenter="handleMouse(item)"
       >
-        <SearchHistoryItem
-          :item="item"
-          @delete-item="handleDelete"
-          @collect-item="handleCollect"
-        />
+        <SearchHistoryItem :item="item" @delete-item="handleDelete" @collect-item="handleCollect" />
       </div>
     </template>
     <template v-if="collectList.length">
