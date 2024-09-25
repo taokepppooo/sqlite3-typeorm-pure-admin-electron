@@ -125,7 +125,20 @@ export function createServer(ip, port) {
           log.info(`SFTP Client disconnected! ip:${client._sock.remoteAddress}`);
         });
     }
-  ).listen(port, ip, function () {
+  );
+
+  server.once("error", err => {
+    if (err.code === "EADDRINUSE") {
+      return false;
+    }
+  });
+
+  server.once("listening", () => {
+    server.close();
+    return false;
+  });
+
+  server.listen(port, ip, function () {
     log.info(` SFTP ip ${ip} listening on port! port:${port}`);
   });
 

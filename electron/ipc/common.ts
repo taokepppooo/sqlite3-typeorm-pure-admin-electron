@@ -1,9 +1,14 @@
 import { ipcMain } from "electron";
 
 export class IpcMainBridge {
-  on(channel: string, cb: Function) {
-    ipcMain.on(channel, (event, arg) => {
-      cb(event, arg);
+  handle(channel: string, cb: Function) {
+    ipcMain.handle(channel, (event, arg) => {
+      try {
+        cb(event, arg);
+        return { success: true };
+      } catch (error) {
+        return { success: false, error };
+      }
     });
   }
 }

@@ -6,7 +6,9 @@ defineOptions({
 });
 
 const handleInitServer = () => {
-  initServer();
+  initServer().then(res => {
+    console.log(res);
+  });
 };
 </script>
 

@@ -1,5 +1,5 @@
 import { ipcRefererBridge } from "./common";
 
-export const initServer = (port?: number) => {
-  return ipcRefererBridge.send("init-server", { port });
+export const initServer = async (port?: number) => {
+  return await ipcRefererBridge.invoke("init-server", { port });
 };

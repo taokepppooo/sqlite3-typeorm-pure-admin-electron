@@ -1,8 +1,8 @@
 import { ipcRenderer } from "electron";
 
 class IpcRefererBridge {
-  send(channel: string, args: Object) {
-    ipcRenderer.send(channel, args);
+  async invoke(channel: string, args: Object) {
+    return await ipcRenderer.invoke(channel, args);
   }
 }
 
