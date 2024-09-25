@@ -11,6 +11,9 @@
     "paths": {
       "@electron/*": [
         "electron/*"
+      ],
+      "@typed/*": [
+        "types/*"
       ]
     }
   },

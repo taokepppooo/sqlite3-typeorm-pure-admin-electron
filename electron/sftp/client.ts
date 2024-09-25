@@ -1,22 +1,18 @@
 import { readFileSync, existsSync } from "node:fs";
 import { createRequire } from "node:module";
-
-export interface ClientType {
-  ip: string;
-  port?: number;
-}
+import type { ClientType } from "@typed/sftp";
 
 const require = createRequire(import.meta.url);
 
 const { Client } = require("ssh2");
 
 let targetIp: string = "";
-let targetPort: number = 50021;
+let targetPort: number;
 let conn: typeof Client;
-export function connectClient({ ip, port }: ClientType) {
+export function connectServer({ ip, port }: ClientType) {
   return new Promise((resolve, reject) => {
     targetIp = ip;
-    targetPort = port;
+    targetPort = port || 50021;
 
     conn = new Client();
 

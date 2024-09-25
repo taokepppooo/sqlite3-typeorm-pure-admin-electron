@@ -28,6 +28,9 @@
       ],
       "@build/*": [
         "build/*"
+      ],
+      "@typed/*": [
+        "types/*"
       ]
     },
     "types": [

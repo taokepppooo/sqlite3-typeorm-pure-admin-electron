@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { initServer } from "@/ipc/sftp-server";
-import { connectClient, uploadFile } from "@/ipc/sftp-client";
+import { connectServer, uploadFile } from "@/ipc/sftp-client";
 
 defineOptions({
   name: "Welcome"
@@ -12,7 +12,7 @@ const handleInitServer = () => {
   });
 };
 const handleConnectServer = () => {
-  connectClient({ ip: "192.168.50.144" });
+  connectServer({ ip: "192.168.50.144", port: 50021 });
 };
 const handleUploadFileToServer = () => {
   uploadFile("database.db", "database.template.db");

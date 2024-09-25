@@ -1,8 +1,8 @@
 import { ipcRefererBridge } from "./common";
-import type { ClientType } from "../../electron/sftp/client";
+import type { ClientType } from "@typed/sftp";
 
-export const connectClient = async ({ ip, port }: ClientType) => {
-  return await ipcRefererBridge.invoke("connect-client", { ip, port });
+export const connectServer = async ({ ip, port }: ClientType) => {
+  return await ipcRefererBridge.invoke("connect-server", { ip, port });
 };
 
 export const uploadFile = async (filePath: string, remotePath: string) => {
