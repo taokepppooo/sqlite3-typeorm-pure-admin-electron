@@ -9,8 +9,13 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
-      "@electron/*": ["electron/*"]
+      "@electron/*": [
+        "electron/*"
+      ]
     }
   },
-  "include": ["package.json", "electron"]
+  "include": [
+    "package.json",
+    "electron"
+  ]
 }
