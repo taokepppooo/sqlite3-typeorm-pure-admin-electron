@@ -16,22 +16,22 @@ export function connectServer({ ip, port }: ClientType) {
 
     conn = new Client();
 
-    conn.connect({
-      host: targetIp,
-      port: targetPort,
-      username: "user",
-      password: "password",
-      passphrase: "user",
-      privateKey: readFileSync("rsa", "utf8")
-    });
-
-    conn.on("ready", () => {
-      resolve(true);
-    });
-
-    conn.on("error", err => {
-      reject(err);
-    });
+    conn
+      .on("ready", () => {
+        resolve(true);
+      })
+      .on("error", err => {
+        console.log(err);
+        reject(err);
+      })
+      .connect({
+        host: targetIp,
+        port: targetPort,
+        username: "user",
+        password: "password",
+        passphrase: "user",
+        privateKey: readFileSync("rsa", "utf8")
+      });
   });
 }
 

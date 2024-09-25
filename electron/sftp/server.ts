@@ -133,11 +133,6 @@ export function createServer(ip, port) {
     }
   });
 
-  server.once("listening", () => {
-    server.close();
-    return false;
-  });
-
   server.listen(port, ip, function () {
     log.info(` SFTP ip ${ip} listening on port! port:${port}`);
   });
