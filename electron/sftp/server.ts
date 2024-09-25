@@ -126,7 +126,7 @@ export function createServer(ip, port) {
         });
     }
   ).listen(port, ip, function () {
-    log.info(`SFTP Listening on port! port:${this.address().port}`);
+    log.info(` SFTP ip ${ip} listening on port! port:${port}`);
   });
 
   return server;
@@ -136,10 +136,10 @@ export function initServer(port = 50021) {
   const server = createServer(getLocalIp(), port);
 
   if (server) {
-    pollingCheck((ip: string) => {
+    pollingCheck(() => {
       log.info("IP changed, restarting server!");
       server.close();
-      createServer(ip, port);
+      createServer(getLocalIp(), port);
     });
   }
 }
