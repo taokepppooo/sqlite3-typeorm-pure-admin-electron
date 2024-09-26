@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import express from "express";
 import cors from "cors";
-import { userApiRouter } from "@electron/api/UserApi";
+import { useUserRouter } from "@electron/api/UserApi";
 
 export async function bootstrap() {
   const app = express();
@@ -17,7 +17,7 @@ export async function bootstrap() {
   app.use(cors(corsOptions));
   app.options("*", cors(corsOptions));
 
-  app.use("/user", userApiRouter);
+  useUserRouter(app);
 
   await app.listen(4000);
 }
