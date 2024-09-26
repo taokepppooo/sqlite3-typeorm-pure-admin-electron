@@ -17,6 +17,18 @@ const handleConnectServer = () => {
 const handleUploadFileToServer = () => {
   uploadFile("database.db", "database.template.db");
 };
+const handleSave = () => {
+  fetch("http://localhost:4000/user/save", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      firstName: "John",
+      age: 14
+    })
+  });
+};
 </script>
 
 <template>
@@ -24,4 +36,5 @@ const handleUploadFileToServer = () => {
   <button @click="handleInitServer">创建服务器</button>
   <button @click="handleConnectServer">| 加入服务器</button>
   <button @click="handleUploadFileToServer">同步数据库文件</button>
+  <button @click="handleSave">保存</button>
 </template>

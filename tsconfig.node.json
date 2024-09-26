@@ -19,6 +19,7 @@
   },
   "include": [
     "package.json",
-    "electron"
+    "electron",
+    "electron/server/**/*",
   ]
 }

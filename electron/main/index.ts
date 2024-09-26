@@ -1,10 +1,10 @@
+import "reflect-metadata";
 import { release } from "node:os";
 import { fileURLToPath } from "node:url";
 import { join, dirname } from "node:path";
 import { type MenuItem, type MenuItemConstructorOptions, app, Menu, shell, ipcMain, BrowserWindow } from "electron";
-import "reflect-metadata";
 import "@electron/ipc";
-import { UserController } from "../controller/UserController";
+import { bootstrap } from "@electron/server/bootstrap";
 
 // The built directory structure
 //
@@ -53,8 +53,7 @@ function createMenu(label = "进入全屏幕") {
 }
 
 async function createWindow() {
-  const userController = new UserController();
-  await userController.save({ id: 7, firstName: "John Doe2", age: 12 });
+  bootstrap();
 
   win = new BrowserWindow({
     width: 1024,

@@ -2,10 +2,13 @@ import { ipcMain } from "electron";
 
 export class IpcMainBridge {
   handle(channel: string, cb: Function) {
-    ipcMain.handle(channel, (event, arg) => {
+    ipcMain.handle(channel, async (event, arg) => {
       try {
-        cb(event, arg);
-        return { success: true };
+        const res = await cb(event, arg);
+
+        if (res) {
+          return { success: true, data: res };
+        }
       } catch (error) {
         return { success: false, error };
       }
